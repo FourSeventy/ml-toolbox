@@ -1,7 +1,8 @@
 package regression
 
 import (
-	"fmt"
+	_ "fmt"
+	"github.com/fourseventy/ml-toolbox/dataset"
 	"testing"
 )
 
@@ -29,9 +30,12 @@ var hypTests = []struct {
 
 func TestRunHypothesis(t *testing.T) {
 	for _, testCase := range hypTests {
-		linearModel := LinearModel{Theta0: testCase.theta0, Theta1: testCase.theta1}
+		linearModel := LinearModel{trained: true, theta0: testCase.theta0, theta1: testCase.theta1}
 
-		y := linearModel.RunHypothesis(testCase.x)
+		y, err := linearModel.RunHypothesis(testCase.x)
+		if err != nil {
+			t.Error(err)
+		}
 
 		if y != testCase.y {
 			t.Error(
@@ -44,32 +48,20 @@ func TestRunHypothesis(t *testing.T) {
 }
 
 func TestTrain(t *testing.T) {
-	trainingData := [][]float64{
-		{1, 1},
-		{2, 2},
-		{3, 3},
-		{4, 4},
-		{5, 5},
-		{6, 6},
-		{7, 7},
-		{8, 8},
-		{9, 9},
-		{10, 10},
-		{11, 11},
-		{12, 12},
-		{13, 13},
-		{14, 14},
-		{15, 15},
-		{16, 16},
-		{17, 17},
-		{60, 60},
-		{99, 99},
-		{20, 20},
+	//load training data
+	trainingData, err := dataset.Load("../testdata/univariate_linear.csv")
+	if err != nil {
+		t.Error(err)
 	}
 
-	model := LinearModel{0, 0}
-	model.Train(trainingData, .001)
-	fmt.Println(model.Theta0, model.Theta1)
-	fmt.Println(model.RunHypothesis(80))
+	//run train
+	model := NewLinearModel()
+	err = model.Train(*trainingData, .00001)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// fmt.Println(model.theta0, model.theta1)
+	// fmt.Println(model.RunHypothesis(80))
 
 }
