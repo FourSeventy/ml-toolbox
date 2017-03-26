@@ -1,7 +1,7 @@
 package regression
 
 import (
-	_ "fmt"
+	"fmt"
 	"github.com/fourseventy/ml-toolbox/dataset"
 	"testing"
 )
@@ -61,7 +61,7 @@ func TestTrain(t *testing.T) {
 		t.Error(err)
 	}
 
-	// fmt.Println(model.theta0, model.theta1)
-	// fmt.Println(model.RunHypothesis(80))
+	fmt.Println(model.theta0, model.theta1)
+	fmt.Println(model.RunHypothesis(80))
 
 }

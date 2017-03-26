@@ -2,7 +2,6 @@ package regression
 
 import (
 	"errors"
-	"fmt"
 	"math"
 )
 
@@ -22,7 +21,7 @@ func NewLinearModel() *LinearModel {
 //Train trains a linear model with the given trainingSet and step size
 //TODO: better trainingSet type
 //TODO: probably want to take a pointer
-//TODO: handle diverging cases, or infinite cases
+//TODO: better divergence detection
 func (model *LinearModel) Train(trainingSet [][]float64, step float64) error {
 	//pick a convergence threshold
 	const threshold = .00001
@@ -55,7 +54,13 @@ func (model *LinearModel) Train(trainingSet [][]float64, step float64) error {
 		model.theta0 = tempTheta0
 		model.theta1 = tempTheta1
 
-		fmt.Printf("Theta0: %v, Theta1: %v \n", model.theta0, model.theta1)
+		// fmt.Printf("Theta0: %v, Theta1: %v \n", model.theta0, model.theta1)
+	}
+
+	//check if a divergence happened
+	if model.theta0 == math.NaN() || model.theta0 == math.Inf(1) || model.theta0 == math.Inf(-1) ||
+		model.theta1 == math.NaN() || model.theta1 == math.Inf(1) || model.theta1 == math.Inf(-1) {
+		return errors.New("training error: gradient descent has diverged, try a smaller step size")
 	}
 
 	//flag the model as trained
