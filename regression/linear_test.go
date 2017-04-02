@@ -1,7 +1,7 @@
 package regression
 
 import (
-	"fmt"
+	_ "fmt"
 	"github.com/fourseventy/ml-toolbox/dataset"
 	"testing"
 )
@@ -61,7 +61,25 @@ func TestTrain(t *testing.T) {
 		t.Error(err)
 	}
 
-	fmt.Println(model.theta0, model.theta1)
-	fmt.Println(model.RunHypothesis(80))
+	//TODO: need some type of acceptance conditions
+}
+
+func TestMeanSquaredError(t *testing.T) {
+	model := LinearModel{trained: true, theta0: 1, theta1: 1}
+
+	dataSet := [][]float64{
+		{6, 7},
+		{1, 2},
+		{0, 1},
+	}
+
+	mse, err := model.MeanSquaredError(dataSet)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if mse != 0 {
+		t.Error("MSE calculation incorrect")
+	}
 
 }

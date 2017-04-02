@@ -88,5 +88,16 @@ func (model LinearModel) calculateHypothesis(x float64) float64 {
 
 //MeanSquaredError returns the mean squared error of the model on a given dataSet
 func (model LinearModel) MeanSquaredError(dataSet [][]float64) (float64, error) {
-	return 0, errors.New("NYI")
+	if !model.trained {
+		return 0, errors.New("error running hypothesis, model untrained")
+	}
+
+	//calculate mse for data set
+	var sum float64
+	for _, example := range dataSet {
+		sum += math.Pow(model.calculateHypothesis(example[0])-example[1], 2)
+	}
+	sum = sum / float64(len(dataSet))
+
+	return sum, nil
 }
