@@ -1,36 +1,55 @@
 package regression
 
 import (
-	_ "fmt"
 	"github.com/fourseventy/ml-toolbox/dataset"
 	"testing"
 )
 
+func TestDimentions(t *testing.T) {
+	lm := LinearModel{trained: true, parameters: []float64{1, 2, 3}}
+	dim, _ := lm.Dimensions()
+	if dim != 2 {
+		t.Error(
+			"Expected: ", 2,
+			"Got: ", dim,
+		)
+	}
+}
+
 var hypTests = []struct {
-	theta0 float64
-	theta1 float64
-	x      float64
-	y      float64
+	parameters []float64
+	x          []float64
+	y          float64
 }{
-	//both thetas zero
-	{0, 0, 0, 0},
-	{0, 0, 4, 0},
-	{0, 0, 70000, 0},
-	{0, 0, 1.5, 0},
+	{[]float64{0, 0}, []float64{0}, 0},
+	{[]float64{0, 0}, []float64{4}, 0},
+	{[]float64{1, 0}, []float64{4}, 1},
+	{[]float64{50, 0}, []float64{33}, 50},
+	{[]float64{5, 10}, []float64{2}, 25},
+	{[]float64{1, 2}, []float64{50}, 101},
+	{[]float64{1, 1, 2, 3}, []float64{2, 3, 4}, 21},
+	{[]float64{1, 1, 2, 3, .5}, []float64{2, 3, 4, 10}, 26},
+}
 
-	//theta 1 zero
-	{1, 0, 4, 1},
-	{50, 0, 33, 50},
-	{700.55, 0, 1122, 700.55},
+func TestRunHypothesisErrors(t *testing.T) {
+	//expect dimentionality mismatch error
+	lm := LinearModel{trained: true, parameters: []float64{1, 2}}
+	_, err := lm.RunHypothesis([]float64{2, 3, 4})
+	if err == nil {
+		t.Error("Expected dimentionality mismatch error, got none")
+	}
 
-	//regular
-	{5, 10, 2, 25},
-	{1, 2, 50, 101},
+	//expect untrained error
+	lm = LinearModel{trained: false, parameters: []float64{1, 2}}
+	_, err = lm.RunHypothesis([]float64{2, 3, 4})
+	if err == nil {
+		t.Error("Expected untrained model error, got none")
+	}
 }
 
 func TestRunHypothesis(t *testing.T) {
 	for _, testCase := range hypTests {
-		linearModel := LinearModel{trained: true, theta0: testCase.theta0, theta1: testCase.theta1}
+		linearModel := LinearModel{trained: true, parameters: testCase.parameters}
 
 		y, err := linearModel.RunHypothesis(testCase.x)
 		if err != nil {
@@ -56,7 +75,7 @@ func TestTrain(t *testing.T) {
 
 	//run train
 	model := NewLinearModel()
-	err = model.Train(*trainingData, .00001)
+	err = model.Train(trainingData, .00001)
 	if err != nil {
 		t.Error(err)
 	}
@@ -65,7 +84,7 @@ func TestTrain(t *testing.T) {
 }
 
 func TestMeanSquaredError(t *testing.T) {
-	model := LinearModel{trained: true, theta0: 1, theta1: 1}
+	model := LinearModel{trained: true, parameters: []float64{1, 1}}
 
 	dataSet := [][]float64{
 		{6, 7},

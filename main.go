@@ -21,7 +21,7 @@ func main() {
 	}
 
 	//train model
-	err = model.Train(*trainingData, 0.00001)
+	err = model.Train(trainingData, 0.00001)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	//find the error against a test set of data
-	mse, err := model.MeanSquaredError(*testData)
+	mse, err := model.MeanSquaredError(testData)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)

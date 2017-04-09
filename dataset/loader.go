@@ -8,7 +8,7 @@ import (
 )
 
 //Load loads in a dataset from a csv file located at filepath
-func Load(filepath string) (*[][]float64, error) {
+func Load(filepath string) ([][]float64, error) {
 	//open the file
 	file, err := os.Open(filepath)
 	if err != nil {
@@ -40,5 +40,5 @@ func Load(filepath string) (*[][]float64, error) {
 	}
 
 	//return array
-	return &dataset, nil
+	return dataset, nil
 }

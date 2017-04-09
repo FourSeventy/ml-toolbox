@@ -25,10 +25,10 @@ func TestLoad(t *testing.T) {
 			"Expected:", 400,
 			"Got:", "nil",
 		)
-	} else if len(*dataset) != 400 {
+	} else if len(dataset) != 400 {
 		t.Error(
 			"Expected:", 400,
-			"Got:", len(*dataset),
+			"Got:", len(dataset),
 		)
 	}
 }
